@@ -1,0 +1,16 @@
+# Datos: nunca al repositorio (los reportes Excel traen registros de clientes)
+data/
+reportes/
+*.csv
+*.xlsx
+*.zip
+
+# Credenciales de GCP
+*.json.key
+*credentials*.json
+*service-account*.json
+.env
+
+# Python
+__pycache__/
+.venv/
