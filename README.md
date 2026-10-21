@@ -4,6 +4,10 @@ Framework de **controles de calidad de datos** sobre una cartera de 150 000 clie
 
 > Proyecto de portafolio orientado a un rol de **Data Quality en el área de Riesgos** de un banco.
 
+**[▶ Ver el dashboard en vivo (Looker Studio)](https://lookerstudio.google.com/reporting/c6b71052-aed3-4c8b-bd41-908d37a6d73a)**
+
+[![Dashboard de calidad de datos en Looker Studio](docs/dashboard.png)](https://lookerstudio.google.com/reporting/c6b71052-aed3-4c8b-bd41-908d37a6d73a)
+
 ---
 
 ## Objetivo
@@ -200,7 +204,7 @@ ORDER BY dia DESC;
 3. **Semáforo por control**
    - Inserta una **Tabla**.
    - Dimensiones: `semaforo`, `nombre_control`, `dimension`, `campo`. Métricas: `registros_fallidos`, `pct_error`, `umbral`.
-   - En el panel **Estilo → Formato condicional**: si `estado` es igual a `ALERTA` → fondo rojo claro; si es `OK` → verde claro.
+   - En el panel **Estilo → Formato condicional**: si `semaforo` **contiene** `ALERTA` → fondo rojo claro; si **contiene** `OK` → verde claro. Usa "contiene" y no "es igual a", porque el valor incluye el emoji (`🔴 ALERTA`).
 4. **Indicadores (scorecards)**
    - Inserta un **Gráfico de resultados** con la métrica *Record Count* y un filtro `estado = ALERTA` → "Controles en alerta".
    - Duplica el gráfico con el filtro `estado = OK`.
@@ -211,7 +215,7 @@ ORDER BY dia DESC;
    - Agrega `v_evolucion` como fuente.
    - Inserta un **Gráfico de serie temporal**: dimensión `fecha`, desglose `nombre_control`, métrica `pct_error`.
    - Cambia la agregación de la métrica de **Suma** a **Promedio**: Looker suma las métricas por defecto, y sumar porcentajes no tiene sentido.
-7. Agrega un **Control de filtro** por `dimension` y, arriba, un texto con la fecha de la última ejecución.
+7. Agrega un **Control de filtro** por `dimension` y un **Gráfico de resultados** con `fecha_ejecucion` y agregación **Máx.** → "Última ejecución" (se actualiza solo; un texto fijo quedaría desactualizado).
 8. **Compartir → Obtener enlace**. Las fuentes usan las credenciales del propietario, así que quien lo vea no necesita acceso a BigQuery.
 
 > `pct_error` ya viene en escala 0-100: déjalo como **Número** con 2 decimales. El tipo *Porcentaje* de Looker espera valores entre 0 y 1.
