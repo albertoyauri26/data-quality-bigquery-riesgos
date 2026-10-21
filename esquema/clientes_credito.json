@@ -1,0 +1,14 @@
+[
+  {"name": "id_cliente", "type": "INT64", "mode": "NULLABLE", "description": "Identificador del cliente (número de fila del archivo original)"},
+  {"name": "mora_grave_2_anios", "type": "INT64", "mode": "NULLABLE", "description": "1 = tuvo un atraso de 90+ días en los 2 años siguientes; 0 = no (variable objetivo de riesgo)"},
+  {"name": "ratio_uso_lineas_rotativas", "type": "FLOAT64", "mode": "NULLABLE", "description": "Saldo en tarjetas y líneas personales / suma de sus límites. Normalmente entre 0 y 1"},
+  {"name": "edad", "type": "INT64", "mode": "NULLABLE", "description": "Edad del cliente en años"},
+  {"name": "num_atrasos_30_59_dias", "type": "INT64", "mode": "NULLABLE", "description": "Veces con atraso de 30-59 días (sin llegar a más) en los últimos 2 años"},
+  {"name": "ratio_deuda", "type": "FLOAT64", "mode": "NULLABLE", "description": "Pagos mensuales de deuda y gastos de vida / ingreso mensual bruto"},
+  {"name": "ingreso_mensual", "type": "NUMERIC", "mode": "NULLABLE", "description": "Ingreso mensual bruto"},
+  {"name": "num_creditos_abiertos", "type": "INT64", "mode": "NULLABLE", "description": "Préstamos en cuotas y líneas de crédito abiertas"},
+  {"name": "num_atrasos_90_dias", "type": "INT64", "mode": "NULLABLE", "description": "Veces con atraso de 90 días o más (el diccionario original no indica ventana de tiempo)"},
+  {"name": "num_creditos_hipotecarios", "type": "INT64", "mode": "NULLABLE", "description": "Préstamos o líneas hipotecarias / inmobiliarias"},
+  {"name": "num_atrasos_60_89_dias", "type": "INT64", "mode": "NULLABLE", "description": "Veces con atraso de 60-89 días (sin llegar a más) en los últimos 2 años"},
+  {"name": "num_dependientes", "type": "INT64", "mode": "NULLABLE", "description": "Dependientes en la familia, sin contar al cliente"}
+]
