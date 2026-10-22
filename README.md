@@ -197,30 +197,35 @@ GROUP BY dia
 ORDER BY dia DESC;
 ```
 
-## Dashboard en Looker Studio (≈10 minutos)
+## Dashboard
 
-1. Entra a [lookerstudio.google.com](https://lookerstudio.google.com) → **Crear → Informe**.
-2. **Agregar datos → BigQuery → Mis proyectos →** `TU_PROJECT_ID` **→** `riesgos_dq` **→** `v_estado_actual` → **Agregar**.
-3. **Semáforo por control**
-   - Inserta una **Tabla**.
-   - Dimensiones: `semaforo`, `nombre_control`, `dimension`, `campo`. Métricas: `registros_fallidos`, `pct_error`, `umbral`.
-   - En el panel **Estilo → Formato condicional**: si `semaforo` **contiene** `ALERTA` → fondo rojo claro; si **contiene** `OK` → verde claro. Usa "contiene" y no "es igual a", porque el valor incluye el emoji (`🔴 ALERTA`).
-4. **Indicadores (scorecards)**
-   - Inserta un **Gráfico de resultados** con la métrica *Record Count* y un filtro `estado = ALERTA` → "Controles en alerta".
-   - Duplica el gráfico con el filtro `estado = OK`.
-5. **% de error por campo**
-   - **Recurso → Administrar fuentes de datos → Agregar** `v_error_por_campo`.
-   - Inserta un **Gráfico de barras**: dimensión `campo`, métrica `pct_error_max`, orden descendente.
-6. **Evolución en el tiempo**
-   - Agrega `v_evolucion` como fuente.
-   - Inserta un **Gráfico de serie temporal**: dimensión `fecha`, desglose `nombre_control`, métrica `pct_error`.
-   - Cambia la agregación de la métrica de **Suma** a **Promedio**: Looker suma las métricas por defecto, y sumar porcentajes no tiene sentido.
-7. Agrega un **Control de filtro** por `dimension` y un **Gráfico de resultados** con `fecha_ejecucion` y agregación **Máx.** → "Última ejecución" (se actualiza solo; un texto fijo quedaría desactualizado).
-8. **Compartir → Obtener enlace**. Las fuentes usan las credenciales del propietario, así que quien lo vea no necesita acceso a BigQuery.
+**[▶ Abrir en Looker Studio](https://lookerstudio.google.com/reporting/c6b71052-aed3-4c8b-bd41-908d37a6d73a)**
 
-> `pct_error` ya viene en escala 0-100: déjalo como **Número** con 2 decimales. El tipo *Porcentaje* de Looker espera valores entre 0 y 1.
->
-> El dataset de Kaggle es estático, así que la evolución será plana hasta que cambien los datos. En producción, la tabla recibiría cargas nuevas cada día.
+Cada panel lee una vista de BigQuery, así que la lógica vive en SQL versionado y el dashboard solo presenta los datos.
+
+| Panel | Vista | Pregunta que responde |
+|---|---|---|
+| Indicadores: controles en alerta, OK y última ejecución | `v_estado_actual` | ¿Cómo están los datos hoy? ¿Corrió la ejecución diaria? |
+| Tabla semáforo, ordenada por % de error | `v_estado_actual` | ¿Qué control falla, cuánto y contra qué umbral? |
+| % de error por campo | `v_error_por_campo` | ¿Qué campos concentran los problemas? |
+| Evolución del % de error | `v_evolucion` | ¿Los problemas mejoran o empeoran con el tiempo? |
+| Filtro por dimensión | `v_estado_actual` | Ver solo Completitud, Unicidad, Validez o Consistencia |
+
+- La "última ejecución" es el máximo de `fecha_ejecucion`, así que se actualiza sola. Si no muestra la fecha de hoy, la ejecución diaria falló.
+- El dataset de Kaggle es estático, así que la evolución es plana. En producción, la tabla recibiría cargas nuevas cada día y ahí se verían las variaciones.
+
+<details>
+<summary>Cómo replicar el dashboard</summary>
+
+1. En Looker Studio: **Crear → Informe → BigQuery →** `riesgos_dq` y agrega las tres vistas como fuentes.
+2. **Tabla:** dimensiones `semaforo`, `nombre_control`, `dimension`, `campo`; métricas `registros_fallidos`, `pct_error`, `umbral`; orden `pct_error` descendente.
+3. **Indicadores:** *Record Count* con filtro `estado = ALERTA` y otro con `estado = OK`; `fecha_ejecucion` con agregación **Máx.** para la última ejecución.
+4. **Barras:** `campo` × `pct_error_max` desde `v_error_por_campo`.
+5. **Serie temporal:** `fecha` × `pct_error` con agregación **Media** (no Suma, porque sumar porcentajes no tiene sentido), desglosada por `nombre_control`, desde `v_evolucion`.
+6. **Filtro:** lista desplegable por `dimension`.
+
+`pct_error` ya viene en escala 0-100: déjalo como Número. El tipo *Porcentaje* de Looker espera valores entre 0 y 1.
+</details>
 
 ## Costos
 
